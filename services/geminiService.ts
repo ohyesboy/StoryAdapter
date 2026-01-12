@@ -106,7 +106,7 @@ export const generateSrtFromAudio = async (audioBase64: string): Promise<string>
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+    model: 'gemini-2.0-flash-exp',
     contents: {
       parts: [
         { text: prompt },

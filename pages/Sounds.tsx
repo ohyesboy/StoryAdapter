@@ -239,23 +239,22 @@ const Sounds: React.FC = () => {
                         {t.voiceFile && (
                             <>
                                 <div className="h-6 w-px bg-gray-200 mx-2"></div>
-                                {t.srtContent ? (
-                                    <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full">
-                                        <FileText size={16} className="text-green-700" />
+                                <button
+                                    onClick={() => handleGenerateSRT(t)}
+                                    disabled={t.isSrtGenerating}
+                                    className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 disabled:opacity-50"
+                                >
+                                    {t.isSrtGenerating ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
+                                    {t.srtContent ? "Regenerate SRT" : "Generate SRT"}
+                                </button>
+                                
+                                {t.srtContent && (
+                                    <div className="flex items-center gap-2 bg-green-50 px-3 py-1.5 rounded-full ml-2">
                                         <span className="text-xs font-medium text-green-700">SRT Ready</span>
-                                        <button onClick={() => downloadFile(t.srtContent!, `subs-${t.configId}.srt`, 'text/plain')} className="ml-2 text-green-500 hover:text-green-700">
+                                        <button onClick={() => downloadFile(t.srtContent!, `subs-${t.configId}.srt`, 'text/plain')} className="ml-1 text-green-500 hover:text-green-700">
                                             <Download size={16} />
                                         </button>
                                     </div>
-                                ) : (
-                                    <button
-                                        onClick={() => handleGenerateSRT(t)}
-                                        disabled={t.isSrtGenerating}
-                                        className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 disabled:opacity-50"
-                                    >
-                                        {t.isSrtGenerating ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
-                                        Generate SRT
-                                    </button>
                                 )}
                             </>
                         )}
