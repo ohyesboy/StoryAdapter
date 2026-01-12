@@ -8,6 +8,10 @@ export interface ImageConfig {
   prompt: string;
 }
 
+export interface SrtConfig {
+  prompt: string;
+}
+
 export interface Translation {
   configId: string;
   title: string;
@@ -40,7 +44,6 @@ export interface VoiceSettings {
   playbackSpeed: number;
   stability: number;
   readTitle: boolean;
-  srtMaxChars?: number;
 }
 
 export interface AppState {
@@ -50,6 +53,7 @@ export interface AppState {
   isAuthenticated: boolean;
   textConfigs: TextConfig[];
   imageConfig: ImageConfig;
+  srtConfig: SrtConfig;
   elevenLabsApiKey: string; // Allow user override if needed, though env is preferred
   voiceSettings: VoiceSettings;
 }
@@ -71,11 +75,19 @@ export const DEFAULT_IMAGE_CONFIG: ImageConfig = {
   prompt: 'Generate this image in "Editorial Vector" Style'
 };
 
+export const DEFAULT_SRT_CONFIG: SrtConfig = {
+  prompt: `Listen to this audio file and generate an SRT (SubRip Subtitle) file content for it.
+Ensure the timestamps are accurate and the text matches the spoken audio.
+Ensure each subtitle block contains only ONE line of text.
+Each line should not have more than 30 characters, try not to break at middle of clauses
+Chinese characters should be in simplified Chinese
+Only output the srt content`
+};
+
 export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
   voiceId: "21m00Tcm4TlvDq8ikWAM", // Rachel - default voice
   language: "en",
   playbackSpeed: 1.0,
   stability: 0.5,
   readTitle: false,
-  srtMaxChars: 40,
 };

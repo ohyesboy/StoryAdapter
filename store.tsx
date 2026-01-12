@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, VoiceSettings, DEFAULT_TEXT_CONFIG2 } from './types';
+import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_SRT_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, SrtConfig, VoiceSettings, DEFAULT_TEXT_CONFIG2 } from './types';
 
 interface AppContextType extends AppState {
   setArticleId: (id: string) => void;
@@ -10,6 +10,7 @@ interface AppContextType extends AppState {
   updateTextConfig: (config: TextConfig) => void;
   deleteTextConfig: (id: string) => void;
   setImageConfigPrompt: (prompt: string) => void;
+  setSrtConfigPrompt: (prompt: string) => void;
   updateTranslation: (translation: Translation) => void;
   addImage: (image: AppImage) => void;
   updateImage: (image: AppImage) => void;
@@ -38,6 +39,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (typeof parsedState.isAuthenticated === 'undefined') {
         parsedState.isAuthenticated = false;
       }
+      if (!parsedState.srtConfig) {
+        parsedState.srtConfig = DEFAULT_SRT_CONFIG;
+      }
       return parsedState;
     }
     return {
@@ -47,6 +51,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       isAuthenticated: false,
       textConfigs: [DEFAULT_TEXT_CONFIG,DEFAULT_TEXT_CONFIG2],
       imageConfig: DEFAULT_IMAGE_CONFIG,
+      srtConfig: DEFAULT_SRT_CONFIG,
       elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
       voiceSettings: DEFAULT_VOICE_SETTINGS,
     };
@@ -126,6 +131,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     imageConfig: { prompt }
   }));
 
+  const setSrtConfigPrompt = (prompt: string) => setState(prev => ({
+    ...prev,
+    srtConfig: { prompt }
+  }));
+
   const updateTranslation = (translation: Translation) => setState(prev => ({
     ...prev,
     translations: prev.translations.map(t => t.configId === translation.configId ? translation : t)
@@ -187,6 +197,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updateTextConfig,
       deleteTextConfig,
       setImageConfigPrompt,
+      setSrtConfigPrompt,
       updateTranslation,
       addImage,
       updateImage,

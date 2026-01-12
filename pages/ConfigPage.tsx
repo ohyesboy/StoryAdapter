@@ -9,7 +9,9 @@ const ConfigPage: React.FC = () => {
     updateTextConfig, 
     deleteTextConfig, 
     imageConfig, 
-    setImageConfigPrompt
+    setImageConfigPrompt,
+    srtConfig,
+    setSrtConfigPrompt
   } = useAppStore();
 
   const handleAddTextConfig = () => {
@@ -35,6 +37,20 @@ const ConfigPage: React.FC = () => {
                 onChange={(e) => setImageConfigPrompt(e.target.value)}
             />
             <p className="text-xs text-gray-500">This prompt is used when regenerating images using the Gemini 2.5 Image model.</p>
+        </div>
+      </section>
+
+      {/* SRT Prompt */}
+      <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 className="text-lg font-semibold text-indigo-600 mb-4">SRT Generation Prompt</h3>
+        <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">Instructions</label>
+            <textarea
+                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none h-32"
+                value={srtConfig?.prompt ?? ''}
+                onChange={(e) => setSrtConfigPrompt(e.target.value)}
+            />
+            <p className="text-xs text-gray-500">This prompt is used when generating SRT subtitles from audio.</p>
         </div>
       </section>
 

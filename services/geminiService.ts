@@ -90,7 +90,7 @@ export const generateImageVariant = async (
   throw new Error("No image data found in response");
 };
 
-export const generateSrtFromAudio = async (audioBase64: string, maxCharsPerLine: number = 40): Promise<string> => {
+export const generateSrtFromAudio = async (audioBase64: string, srtPrompt: string): Promise<string> => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
   const ai = new GoogleGenAI({ apiKey });
@@ -99,20 +99,13 @@ export const generateSrtFromAudio = async (audioBase64: string, maxCharsPerLine:
   // Assuming mp3 or wav, but Gemini handles common formats
   const mimeType = 'audio/mp3'; // ElevenLabs default
 
-  const prompt = `
-    Listen to this audio file and generate an SRT (SubRip Subtitle) file content for it.
-    Ensure the timestamps are accurate and the text matches the spoken audio.
-    Make sure each subtitle line does not exceed ${maxCharsPerLine} characters.
-    Ensure each subtitle block contains only ONE line of text.
-    Try not to break in the middle of sentence or phrase.
-    Output ONLY the SRT content.
-  `;
+  console.log("Generating SRT with prompt:", srtPrompt);
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash-exp',
+    model: 'gemini-3-flash-preview',
     contents: {
       parts: [
-        { text: prompt },
+        { text: srtPrompt },
         {
           inlineData: {
             mimeType,

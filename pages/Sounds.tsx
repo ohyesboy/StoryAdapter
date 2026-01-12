@@ -6,12 +6,12 @@ import { Download, Loader2, Play, Volume2, FileText, Pause } from 'lucide-react'
 import { Translation } from '../types';
 
 const Sounds: React.FC = () => {
-  const { translations, textConfigs, updateTranslation, elevenLabsApiKey, voiceSettings, updateVoiceSettings, article } = useAppStore();
+  const { translations, textConfigs, updateTranslation, elevenLabsApiKey, voiceSettings, updateVoiceSettings, article, srtConfig } = useAppStore();
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [voices, setVoices] = useState<any[]>([]);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
-  const { voiceId, language, stability, readTitle, srtMaxChars } = voiceSettings;
+  const { voiceId, language, stability, readTitle } = voiceSettings;
 
   useEffect(() => {
     if (elevenLabsApiKey) {
@@ -57,7 +57,7 @@ const Sounds: React.FC = () => {
       if (!t.voiceFile) return;
       updateTranslation({...t, isSrtGenerating: true});
       try {
-          const srt = await generateSrtFromAudio(t.voiceFile, srtMaxChars);
+          const srt = await generateSrtFromAudio(t.voiceFile, srtConfig?.prompt || '');
           updateTranslation({...t, srtContent: srt, isSrtGenerating: false});
       } catch (e: any) {
           alert(`SRT generation failed: ${e.message}`);
@@ -163,21 +163,9 @@ const Sounds: React.FC = () => {
           </div>
 
             <div className="flex items-center gap-4 pt-2 border-t">
-            <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">SRT Length:</span>
-                <input
-                    type="range"
-                    min="5"
-                    max="50"
-                    step="5"
-                    value={srtMaxChars || 40}
-                    onChange={(e) => updateVoiceSettings({ srtMaxChars: parseInt(e.target.value) })}
-                    className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                />
-                <span className="text-xs text-gray-500 w-6 font-mono">{srtMaxChars || 40}</span>
-            </div>
+           
 
-            <div className="h-4 w-px bg-gray-300"></div>
+       
 
             <label className="flex items-center space-x-2 cursor-pointer select-none text-sm text-gray-700">
                 <input
