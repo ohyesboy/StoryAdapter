@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_TEXT_CONFIG, Translation, AppImage, TextConfig } from './types';
+import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, VoiceSettings } from './types';
 
 interface AppContextType extends AppState {
   setArticleTitle: (title: string) => void;
@@ -15,6 +15,7 @@ interface AppContextType extends AppState {
   removeImage: (id: string) => void;
   resetTranslations: () => void;
   setElevenLabsApiKey: (key: string) => void;
+  updateVoiceSettings: (settings: Partial<VoiceSettings>) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -25,7 +26,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [state, setState] = useState<AppState>(() => {
     const saved = sessionStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsedState = JSON.parse(saved);
+      // Ensure voiceSettings exists for backward compatibility
+      if (!parsedState.voiceSettings) {
+        parsedState.voiceSettings = DEFAULT_VOICE_SETTINGS;
+      }
+      return parsedState;
     }
     return {
       article: { title: '', content: '', url: '' },
@@ -33,7 +39,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       images: [],
       textConfigs: [DEFAULT_TEXT_CONFIG],
       imageConfig: DEFAULT_IMAGE_CONFIG,
-      elevenLabsApiKey: process.env.ELEVENLABS_API_KEY || '',
+      elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
+      voiceSettings: DEFAULT_VOICE_SETTINGS,
     };
   });
 
@@ -119,6 +126,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const setElevenLabsApiKey = (key: string) => setState(prev => ({ ...prev, elevenLabsApiKey: key }));
 
+  const updateVoiceSettings = (settings: Partial<VoiceSettings>) => setState(prev => ({
+    ...prev,
+    voiceSettings: { ...prev.voiceSettings, ...settings }
+  }));
+
   return (
     <AppContext.Provider value={{
       ...state,
@@ -135,6 +147,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       removeImage,
       resetTranslations,
       setElevenLabsApiKey,
+      updateVoiceSettings,
     }}>
       {children}
     </AppContext.Provider>

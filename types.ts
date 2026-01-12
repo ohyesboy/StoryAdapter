@@ -32,6 +32,14 @@ export interface Article {
   url?: string;
 }
 
+export interface VoiceSettings {
+  voiceId: string;
+  language: string;
+  playbackSpeed: number;
+  stability: number;
+  readTitle: boolean;
+}
+
 export interface AppState {
   article: Article;
   translations: Translation[];
@@ -39,6 +47,7 @@ export interface AppState {
   textConfigs: TextConfig[];
   imageConfig: ImageConfig;
   elevenLabsApiKey: string; // Allow user override if needed, though env is preferred
+  voiceSettings: VoiceSettings;
 }
 
 export const DEFAULT_TEXT_CONFIG: TextConfig = {
@@ -49,4 +58,12 @@ export const DEFAULT_TEXT_CONFIG: TextConfig = {
 
 export const DEFAULT_IMAGE_CONFIG: ImageConfig = {
   prompt: 'Generate this image in "Editorial Vector" Style'
+};
+
+export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
+  voiceId: "21m00Tcm4TlvDq8ikWAM", // Rachel - default voice
+  language: "en",
+  playbackSpeed: 1.0,
+  stability: 0.5,
+  readTitle: false,
 };

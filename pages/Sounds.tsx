@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppStore } from '../store';
 import { generateSpeech, getVoices } from '../services/elevenLabsService';
 import { generateSrtFromAudio } from '../services/geminiService';
@@ -6,20 +6,28 @@ import { Download, Loader2, Play, Volume2, FileText, Pause } from 'lucide-react'
 import { Translation } from '../types';
 
 const Sounds: React.FC = () => {
-  const { translations, textConfigs, updateTranslation, elevenLabsApiKey } = useAppStore();
-  const [readTitle, setReadTitle] = useState(false);
-  const [voiceId, setVoiceId] = useState("21m00Tcm4TlvDq8ikWAM"); // Default Rachel
+  const { translations, textConfigs, updateTranslation, elevenLabsApiKey, voiceSettings, updateVoiceSettings } = useAppStore();
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [voices, setVoices] = useState<any[]>([]);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  const { voiceId, language, playbackSpeed, stability, readTitle } = voiceSettings;
+
+  useEffect(() => {
+    if (elevenLabsApiKey) {
+      getVoices(elevenLabsApiKey).then(setVoices);
+    }
+  }, [elevenLabsApiKey]);
 
   const handleGenerateSound = async (t: Translation) => {
     if (!t.content) return;
     updateTranslation({ ...t, isVoiceGenerating: true });
-    
+
     const textToRead = readTitle ? `${t.title}. ${t.content}` : t.content;
+    const modelId = language === 'en' ? 'eleven_monolingual_v1' : 'eleven_multilingual_v2';
 
     try {
-      const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId);
+      const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, playbackSpeed);
       updateTranslation({ ...t, voiceFile: audioData, isVoiceGenerating: false });
     } catch (e: any) {
       alert(`Voice generation failed: ${e.message}`);
@@ -80,37 +88,105 @@ const Sounds: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">Voice Over</h2>
-        
-        <div className="flex flex-wrap items-center gap-4 bg-white p-3 rounded-lg border shadow-sm">
-             <label className="flex items-center space-x-2 cursor-pointer select-none text-sm text-gray-700">
-                <input 
-                    type="checkbox" 
-                    checked={readTitle} 
-                    onChange={e => setReadTitle(e.target.checked)}
+      <h2 className="text-2xl font-bold text-gray-800">Voice Over</h2>
+
+      <div className="bg-white p-3 rounded-lg border shadow-sm space-y-3">
+        <div className="flex flex-wrap items-center gap-4">
+             <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Speed:</span>
+                <input
+                    type="range"
+                    min="0.7"
+                    max="1.2"
+                    step="0.1"
+                    value={playbackSpeed}
+                    onChange={(e) => updateVoiceSettings({ playbackSpeed: parseFloat(e.target.value) })}
+                    className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <span className="text-xs text-gray-500 w-8">{playbackSpeed.toFixed(1)}x</span>
+            </div>
+
+            <div className="h-4 w-px bg-gray-300"></div>
+
+            <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500">Creative</span>
+                <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={stability}
+                    onChange={(e) => updateVoiceSettings({ stability: parseFloat(e.target.value) })}
+                    className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <span className="text-xs text-gray-500">Robust</span>
+            </div>
+
+            <div className="h-4 w-px bg-gray-300"></div>
+
+            <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Lang:</span>
+                <select 
+                    value={language}
+                    onChange={(e) => updateVoiceSettings({ language: e.target.value })}
+                    className="border rounded px-2 py-1 text-sm bg-white"
+                >
+                    <option value="en">English (en)</option>
+                    <option value="zh">Chinese (zh)</option>
+                    <option value="es">Spanish (es)</option>
+                    <option value="fr">French (fr)</option>
+                    <option value="de">German (de)</option>
+                    <option value="ja">Japanese (ja)</option>
+                </select>
+            </div>
+
+            <div className="h-4 w-px bg-gray-300"></div>
+
+            <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Voice:</span>
+                {voices.length > 0 ? (
+                  <select
+                    value={voiceId}
+                    onChange={(e) => updateVoiceSettings({ voiceId: e.target.value })}
+                    className="border rounded px-2 py-1 text-sm w-48"
+                  >
+                    {voices.map((voice: any) => (
+                      <option key={voice.voice_id} value={voice.voice_id}>
+                        {voice.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input 
+                      type="text" 
+                      value={voiceId} 
+                      onChange={(e) => updateVoiceSettings({ voiceId: e.target.value })}
+                      placeholder="Enter Voice ID"
+                      className="border rounded px-2 py-1 text-sm w-32"
+                  />
+                )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 pt-2 border-t">
+            <label className="flex items-center space-x-2 cursor-pointer select-none text-sm text-gray-700">
+                <input
+                    type="checkbox"
+                    checked={readTitle}
+                    onChange={e => updateVoiceSettings({ readTitle: e.target.checked })}
                     className="rounded text-indigo-600 focus:ring-indigo-500"
                 />
                 <span>Read Title</span>
             </label>
-            <div className="h-4 w-px bg-gray-300"></div>
-            <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Voice ID:</span>
-                <input 
-                    type="text" 
-                    value={voiceId} 
-                    onChange={(e) => setVoiceId(e.target.value)}
-                    className="border rounded px-2 py-1 text-sm w-32"
-                />
-            </div>
+
             <button
                 onClick={handleBatchGenerate}
                 className="bg-indigo-600 text-white px-3 py-1.5 rounded text-sm hover:bg-indigo-700 flex items-center gap-2"
             >
                 <Volume2 size={16} /> Batch Generate
             </button>
+          </div>
         </div>
-      </div>
 
       <div className="grid gap-6">
         {translations.map(t => {
@@ -127,8 +203,17 @@ const Sounds: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-4 items-center pt-4 border-t">
+                        <button
+                            onClick={() => handleGenerateSound(t)}
+                            disabled={!t.content || t.isVoiceGenerating}
+                            className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 disabled:opacity-50"
+                        >
+                            {t.isVoiceGenerating ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
+                            {t.voiceFile ? "Regenerate Voice" : "Generate Voice"}
+                        </button>
+
                         {/* Audio Controls */}
-                        {t.voiceFile ? (
+                        {t.voiceFile && (
                             <div className="flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-full">
                                 <button onClick={() => togglePlay(t)} className="text-indigo-700 hover:text-indigo-900">
                                     {playingId === t.configId ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
@@ -138,15 +223,6 @@ const Sounds: React.FC = () => {
                                     <Download size={16} />
                                 </button>
                             </div>
-                        ) : (
-                            <button
-                                onClick={() => handleGenerateSound(t)}
-                                disabled={!t.content || t.isVoiceGenerating}
-                                className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-indigo-600 disabled:opacity-50"
-                            >
-                                {t.isVoiceGenerating ? <Loader2 size={16} className="animate-spin" /> : <Volume2 size={16} />}
-                                Generate Voice
-                            </button>
                         )}
 
                         {/* SRT Controls */}

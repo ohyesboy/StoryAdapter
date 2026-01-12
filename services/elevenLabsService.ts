@@ -4,10 +4,13 @@ const API_URL = "https://api.elevenlabs.io/v1";
 export const generateSpeech = async (
   text: string,
   apiKey: string,
-  voiceId: string = "21m00Tcm4TlvDq8ikWAM" // Rachel - default voice
+  voiceId: string = "21m00Tcm4TlvDq8ikWAM", // Rachel - default voice
+  modelId: string = "eleven_monolingual_v1",
+  stability: number = 0.5,
+  speed: number = 1.0
 ): Promise<string> => {
   if (!apiKey) throw new Error("ElevenLabs API Key is missing");
-  
+
   const response = await fetch(`${API_URL}/text-to-speech/${voiceId}`, {
     method: "POST",
     headers: {
@@ -16,10 +19,11 @@ export const generateSpeech = async (
     },
     body: JSON.stringify({
       text,
-      model_id: "eleven_monolingual_v1",
+      model_id: modelId,
       voice_settings: {
-        stability: 0.5,
+        stability,
         similarity_boost: 0.75,
+        speed,
       },
     }),
   });
