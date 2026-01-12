@@ -19,6 +19,7 @@ interface AppContextType extends AppState {
   resetArticle: () => void;
   setElevenLabsApiKey: (key: string) => void;
   updateVoiceSettings: (settings: Partial<VoiceSettings>) => void;
+  loadProject: (data: Partial<AppState>) => void;
   login: (password: string) => boolean;
   logout: () => void;
 }
@@ -27,34 +28,43 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'article_adapter_session_v1';
 
+const initialState: AppState = {
+  article: { title: '', content: '', url: '' },
+  translations: [],
+  images: [],
+  isAuthenticated: false,
+  textConfigs: [DEFAULT_TEXT_CONFIG, DEFAULT_TEXT_CONFIG2],
+  imageConfig: DEFAULT_IMAGE_CONFIG,
+  srtConfig: DEFAULT_SRT_CONFIG,
+  elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
+  voiceSettings: DEFAULT_VOICE_SETTINGS,
+};
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsedState = JSON.parse(saved);
-      // Ensure voiceSettings exists for backward compatibility
-      if (!parsedState.voiceSettings) {
-        parsedState.voiceSettings = DEFAULT_VOICE_SETTINGS;
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsedState = JSON.parse(saved);
+        
+        // Merge with initial state to ensure all required fields exist
+        // This prevents crashes if new fields are added to the store but not in local storage
+        return {
+          ...initialState,
+          ...parsedState,
+          // Deep merge for nested objects if necessary, or specific overrides
+          voiceSettings: { ...initialState.voiceSettings, ...parsedState.voiceSettings },
+          // Ensure arrays are at least empty arrays if they were missing in saved state
+          translations: parsedState.translations || [],
+          textConfigs: parsedState.textConfigs || initialState.textConfigs,
+          images: parsedState.images || [],
+        };
       }
-      if (typeof parsedState.isAuthenticated === 'undefined') {
-        parsedState.isAuthenticated = false;
-      }
-      if (!parsedState.srtConfig) {
-        parsedState.srtConfig = DEFAULT_SRT_CONFIG;
-      }
-      return parsedState;
+    } catch (error) {
+      console.error('Failed to load state from storage:', error);
     }
-    return {
-      article: { title: '', content: '', url: '' },
-      translations: [],
-      images: [],
-      isAuthenticated: false,
-      textConfigs: [DEFAULT_TEXT_CONFIG,DEFAULT_TEXT_CONFIG2],
-      imageConfig: DEFAULT_IMAGE_CONFIG,
-      srtConfig: DEFAULT_SRT_CONFIG,
-      elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
-      voiceSettings: DEFAULT_VOICE_SETTINGS,
-    };
+    
+    return initialState;
   });
 
   useEffect(() => {
@@ -172,6 +182,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     voiceSettings: { ...prev.voiceSettings, ...settings }
   }));
 
+  const loadProject = (data: Partial<AppState>) => {
+    setState(prev => ({
+      ...prev,
+      ...data,
+      // Ensure we keep existing auth state and keys if not provided in data
+      isAuthenticated: prev.isAuthenticated,
+      elevenLabsApiKey: prev.elevenLabsApiKey || data.elevenLabsApiKey || '', 
+      // Force images to be empty if not provided (requirements said do not include images in save)
+      images: data.images || [], 
+    }));
+  };
+
   const login = (password: string) => {
     // @ts-ignore
     const envPassword = process.env.PASSWORD;
@@ -206,6 +228,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       resetTranslations,
       setElevenLabsApiKey,
       updateVoiceSettings,
+      loadProject,
       login,
       logout
     }}>

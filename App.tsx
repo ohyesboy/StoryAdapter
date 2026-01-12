@@ -8,6 +8,7 @@ import ImagesPage from './pages/ImagesPage';
 import Sounds from './pages/Sounds';
 import ConfigPage from './pages/ConfigPage';
 import LoginPage from './pages/LoginPage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const MainContent: React.FC = () => {
     const { isAuthenticated } = useAppStore();
@@ -32,11 +33,13 @@ const MainContent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <AppProvider>
-      <HashRouter>
-        <MainContent />
-      </HashRouter>
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        <HashRouter>
+          <MainContent />
+        </HashRouter>
+      </AppProvider>
+    </ErrorBoundary>
   );
 };
 
