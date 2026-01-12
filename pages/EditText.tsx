@@ -50,7 +50,10 @@ const EditText: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `adapted-${t.configId}.txt`;
+    const config = textConfigs.find(c => c.id === t.configId);
+    const configName = config ? config.name : t.configId;
+    const filename = article.id ? `${article.id}_${configName}.txt` : `adapted-${t.configId}.txt`;
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
   };

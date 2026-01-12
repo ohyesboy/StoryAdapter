@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, VoiceSettings } from './types';
 
 interface AppContextType extends AppState {
+  setArticleId: (id: string) => void;
   setArticleTitle: (title: string) => void;
   setArticleContent: (content: string) => void;
   setArticleUrl: (url: string) => void;
@@ -97,6 +98,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   }, [state.textConfigs.length, state.textConfigs]);
 
+  const setArticleId = (id: string) => setState(prev => ({ ...prev, article: { ...prev.article, id } }));
   const setArticleTitle = (title: string) => setState(prev => ({ ...prev, article: { ...prev.article, title } }));
   const setArticleContent = (content: string) => setState(prev => ({ ...prev, article: { ...prev.article, content } }));
   const setArticleUrl = (url: string) => setState(prev => ({ ...prev, article: { ...prev.article, url } }));
@@ -157,6 +159,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   return (
     <AppContext.Provider value={{
       ...state,
+      setArticleId,
       setArticleTitle,
       setArticleContent,
       setArticleUrl,

@@ -5,7 +5,7 @@ import { Download, Loader2, Sparkles, Trash2, Upload, RefreshCw } from 'lucide-r
 import { AppImage } from '../types';
 
 const ImagesPage: React.FC = () => {
-  const { images, imageConfig, addImage, updateImage, removeImage } = useAppStore();
+  const { images, imageConfig, addImage, updateImage, removeImage, article } = useAppStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,10 +40,18 @@ const ImagesPage: React.FC = () => {
     await Promise.all(promises);
   };
 
-  const handleDownload = (dataUrl: string, prefix: string) => {
+  const handleDownload = (dataUrl: string, index: number, isGenerated: boolean) => {
     const a = document.createElement('a');
     a.href = dataUrl;
-    a.download = `${prefix}-${Date.now()}.png`;
+    
+    let filename;
+    if (article.id) {
+        filename = `${article.id}_${index + 1}${isGenerated ? '_gen' : ''}.png`;
+    } else {
+        filename = `image-${index + 1}-${isGenerated ? 'generated' : 'original'}-${Date.now()}.png`;
+    }
+
+    a.download = filename;
     a.click();
   };
 
@@ -99,7 +107,7 @@ const ImagesPage: React.FC = () => {
                  <div className="flex justify-between items-center">
                     <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Generated</span>
                     {img.generatedUrl && (
-                        <button onClick={() => handleDownload(img.generatedUrl!, 'generated')} className="text-indigo-600 hover:text-indigo-800">
+                        <button onClick={() => handleDownload(img.generatedUrl!, index, true)} className="text-indigo-600 hover:text-indigo-800">
                             <Download size={16} />
                         </button>
                     )}

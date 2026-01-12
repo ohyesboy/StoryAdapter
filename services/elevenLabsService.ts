@@ -11,6 +11,8 @@ export const generateSpeech = async (
 ): Promise<string> => {
   if (!apiKey) throw new Error("ElevenLabs API Key is missing");
 
+  console.log(`[ElevenLabs] Generating speech. Model: ${modelId}, Speed: ${speed}, Stability: ${stability}, Voice: ${voiceId}`);
+
   const response = await fetch(`${API_URL}/text-to-speech/${voiceId}`, {
     method: "POST",
     headers: {

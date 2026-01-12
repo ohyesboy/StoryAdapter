@@ -6,7 +6,7 @@ import { Download, Loader2, Play, Volume2, FileText, Pause } from 'lucide-react'
 import { Translation } from '../types';
 
 const Sounds: React.FC = () => {
-  const { translations, textConfigs, updateTranslation, elevenLabsApiKey, voiceSettings, updateVoiceSettings } = useAppStore();
+  const { translations, textConfigs, updateTranslation, elevenLabsApiKey, voiceSettings, updateVoiceSettings, article } = useAppStore();
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [voices, setVoices] = useState<any[]>([]);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
@@ -24,7 +24,7 @@ const Sounds: React.FC = () => {
     updateTranslation({ ...t, isVoiceGenerating: true });
 
     const textToRead = readTitle ? `${t.title}. ${t.content}` : t.content;
-    const modelId = 'eleven_multilingual_v2';
+    const modelId = 'eleven_v3';
     const speed = t.speed || 1.0;
 
     try {
@@ -189,8 +189,8 @@ const Sounds: React.FC = () => {
                            <span className="text-xs text-gray-500">Speed:</span>
                            <input
                               type="range"
-                              min="0.5"
-                              max="2.0"
+                              min="0.7"
+                              max="1.2"
                               step="0.1"
                               value={t.speed || 1.0}
                               onChange={(e) => updateTranslation({ ...t, speed: parseFloat(e.target.value) })}
@@ -217,7 +217,10 @@ const Sounds: React.FC = () => {
                                     {playingId === t.configId ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
                                 </button>
                                 <span className="text-xs font-medium text-indigo-700">Audio Ready</span>
-                                <button onClick={() => downloadFile(t.voiceFile!, `audio-${t.configId}.mp3`, 'data-url')} className="ml-2 text-indigo-400 hover:text-indigo-600">
+                                <button onClick={() => {
+                                    const filename = article.id ? `${article.id}_${config.name}.mp3` : `audio-${t.configId}.mp3`;
+                                    downloadFile(t.voiceFile!, filename, 'data-url');
+                                }} className="ml-2 text-indigo-400 hover:text-indigo-600">
                                     <Download size={16} />
                                 </button>
                             </div>
