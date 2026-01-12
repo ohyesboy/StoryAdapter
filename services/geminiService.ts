@@ -90,7 +90,7 @@ export const generateImageVariant = async (
   throw new Error("No image data found in response");
 };
 
-export const generateSrtFromAudio = async (audioBase64: string): Promise<string> => {
+export const generateSrtFromAudio = async (audioBase64: string, maxCharsPerLine: number = 40): Promise<string> => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
   const ai = new GoogleGenAI({ apiKey });
@@ -102,6 +102,7 @@ export const generateSrtFromAudio = async (audioBase64: string): Promise<string>
   const prompt = `
     Listen to this audio file and generate an SRT (SubRip Subtitle) file content for it.
     Ensure the timestamps are accurate and the text matches the spoken audio.
+    Make sure each subtitle line does not exceed ${maxCharsPerLine} characters.
     Output ONLY the SRT content.
   `;
 

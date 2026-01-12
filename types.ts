@@ -40,6 +40,7 @@ export interface VoiceSettings {
   playbackSpeed: number;
   stability: number;
   readTitle: boolean;
+  srtMaxChars?: number;
 }
 
 export interface AppState {
@@ -76,4 +77,5 @@ export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
   playbackSpeed: 1.0,
   stability: 0.5,
   readTitle: false,
+  srtMaxChars: 40,
 };
