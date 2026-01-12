@@ -29,7 +29,7 @@ const STORAGE_KEY = 'article_adapter_session_v1';
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(() => {
-    const saved = sessionStorage.getItem(STORAGE_KEY);
+    const saved = localStorage.getItem(STORAGE_KEY) || sessionStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsedState = JSON.parse(saved);
       // Ensure voiceSettings exists for backward compatibility
@@ -70,9 +70,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }),
         // Also limit images if they are too large, but lets start with audio
       };
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
     } catch (e) {
-      console.warn("Failed to save state to sessionStorage (Quota Exceeded):", e);
+      console.warn("Failed to save state to localStorage (Quota Exceeded):", e);
     }
   }, [state]);
 
