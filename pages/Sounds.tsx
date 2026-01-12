@@ -29,7 +29,7 @@ const Sounds: React.FC = () => {
 
     try {
       const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, speed);
-      updateTranslation({ ...t, voiceFile: audioData, isVoiceGenerating: false });
+      updateTranslation({ ...t, voiceFile: audioData, srtContent: undefined, isVoiceGenerating: false });
     } catch (e: any) {
       alert(`Voice generation failed: ${e.message}`);
       updateTranslation({ ...t, isVoiceGenerating: false });

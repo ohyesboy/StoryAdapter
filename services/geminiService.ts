@@ -103,6 +103,8 @@ export const generateSrtFromAudio = async (audioBase64: string, maxCharsPerLine:
     Listen to this audio file and generate an SRT (SubRip Subtitle) file content for it.
     Ensure the timestamps are accurate and the text matches the spoken audio.
     Make sure each subtitle line does not exceed ${maxCharsPerLine} characters.
+    Ensure each subtitle block contains only ONE line of text.
+    Try not to break in the middle of sentence or phrase.
     Output ONLY the SRT content.
   `;
 
@@ -123,5 +125,6 @@ export const generateSrtFromAudio = async (audioBase64: string, maxCharsPerLine:
 
   const text = response.text;
   if (!text) throw new Error("Failed to generate SRT");
-  return text;
+  // Remove markdown code block markers if present
+  return text.replace(/^```(srt)?\n?/i, '').replace(/\n?```$/, '');
 };
