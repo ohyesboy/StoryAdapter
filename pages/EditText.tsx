@@ -45,7 +45,7 @@ const EditText: React.FC = () => {
   };
 
   const handleDownload = (t: Translation) => {
-    const text = `TITLE: ${t.title}\n\nCONTENT:\n${t.content}`;
+    const text = `${t.title}\n\n${t.content}`;
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

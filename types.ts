@@ -17,6 +17,7 @@ export interface Translation {
   isGenerating?: boolean;
   isVoiceGenerating?: boolean;
   isSrtGenerating?: boolean;
+  speed?: number; // Voice generation speed
 }
 
 export interface AppImage {

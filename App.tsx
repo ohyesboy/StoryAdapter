@@ -2,7 +2,7 @@ import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider } from './store';
 import Layout from './components/Layout';
-import OriginalArticle from './pages/OriginalArticle';
+import Start from './pages/Start';
 import EditText from './pages/EditText';
 import ImagesPage from './pages/ImagesPage';
 import Sounds from './pages/Sounds';
@@ -14,7 +14,7 @@ const App: React.FC = () => {
       <HashRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<OriginalArticle />} />
+            <Route path="/" element={<Start />} />
             <Route path="/edit" element={<EditText />} />
             <Route path="/images" element={<ImagesPage />} />
             <Route path="/sounds" element={<Sounds />} />

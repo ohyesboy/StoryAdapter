@@ -11,7 +11,7 @@ const Sounds: React.FC = () => {
   const [voices, setVoices] = useState<any[]>([]);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
-  const { voiceId, language, playbackSpeed, stability, readTitle } = voiceSettings;
+  const { voiceId, language, stability, readTitle } = voiceSettings;
 
   useEffect(() => {
     if (elevenLabsApiKey) {
@@ -24,10 +24,11 @@ const Sounds: React.FC = () => {
     updateTranslation({ ...t, isVoiceGenerating: true });
 
     const textToRead = readTitle ? `${t.title}. ${t.content}` : t.content;
-    const modelId = 'eleven_v3';
+    const modelId = 'eleven_multilingual_v2';
+    const speed = t.speed || 1.0;
 
     try {
-      const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, playbackSpeed);
+      const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, speed);
       updateTranslation({ ...t, voiceFile: audioData, isVoiceGenerating: false });
     } catch (e: any) {
       alert(`Voice generation failed: ${e.message}`);
@@ -92,22 +93,6 @@ const Sounds: React.FC = () => {
 
       <div className="bg-white p-3 rounded-lg border shadow-sm space-y-3">
         <div className="flex flex-wrap items-center gap-4">
-             <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Speed:</span>
-                <input
-                    type="range"
-                    min="0.7"
-                    max="1.2"
-                    step="0.1"
-                    value={playbackSpeed}
-                    onChange={(e) => updateVoiceSettings({ playbackSpeed: parseFloat(e.target.value) })}
-                    className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                />
-                <span className="text-xs text-gray-500 w-8">{playbackSpeed.toFixed(1)}x</span>
-            </div>
-
-            <div className="h-4 w-px bg-gray-300"></div>
-
             <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-500">Creative</span>
                 <input
@@ -196,9 +181,22 @@ const Sounds: React.FC = () => {
             return (
                 <div key={t.configId} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex justify-between items-start mb-4">
-                        <div>
+                        <div className="flex-1">
                             <h3 className="font-semibold text-gray-800">{config.name}</h3>
                             <p className="text-sm text-gray-500 mt-1 line-clamp-2">{t.content || "No content generated yet."}</p>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4 bg-gray-50 p-1.5 rounded-lg border">
+                           <span className="text-xs text-gray-500">Speed:</span>
+                           <input
+                              type="range"
+                              min="0.5"
+                              max="2.0"
+                              step="0.1"
+                              value={t.speed || 1.0}
+                              onChange={(e) => updateTranslation({ ...t, speed: parseFloat(e.target.value) })}
+                              className="w-16 h-1.5 bg-gray-300 rounded-lg appearance-none cursor-pointer"
+                           />
+                           <span className="text-xs text-gray-500 w-6 font-mono">{(t.speed || 1.0).toFixed(1)}</span>
                         </div>
                     </div>
 

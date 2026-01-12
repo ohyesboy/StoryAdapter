@@ -14,6 +14,7 @@ interface AppContextType extends AppState {
   updateImage: (image: AppImage) => void;
   removeImage: (id: string) => void;
   resetTranslations: () => void;
+  resetArticle: () => void;
   setElevenLabsApiKey: (key: string) => void;
   updateVoiceSettings: (settings: Partial<VoiceSettings>) => void;
 }
@@ -45,7 +46,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   useEffect(() => {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+      // Create a lightweight version of state to save
+      // Exclude large binary data like audio files to prevent QuotaExceededError
+      const stateToSave = {
+        ...state,
+        translations: state.translations.map(t => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { voiceFile, ...rest } = t; 
+          return rest;
+        }),
+        // Also limit images if they are too large, but lets start with audio
+      };
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+    } catch (e) {
+      console.warn("Failed to save state to sessionStorage (Quota Exceeded):", e);
+    }
   }, [state]);
 
   // Ensure translations exist for all configs
@@ -126,6 +142,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const setElevenLabsApiKey = (key: string) => setState(prev => ({ ...prev, elevenLabsApiKey: key }));
 
+  const resetArticle = () => setState(prev => ({
+    ...prev,
+    article: { title: '', content: '', url: '' },
+    translations: prev.textConfigs.map(cfg => ({ configId: cfg.id, title: '', content: '' })),
+    images: []
+  }));
+
   const updateVoiceSettings = (settings: Partial<VoiceSettings>) => setState(prev => ({
     ...prev,
     voiceSettings: { ...prev.voiceSettings, ...settings }
@@ -145,6 +168,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       addImage,
       updateImage,
       removeImage,
+      resetArticle,
       resetTranslations,
       setElevenLabsApiKey,
       updateVoiceSettings,

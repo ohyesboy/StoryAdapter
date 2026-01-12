@@ -4,7 +4,7 @@ import { FileText, Edit3, Image as ImageIcon, Volume2, Settings } from 'lucide-r
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navItems = [
-    { to: "/", icon: FileText, label: "Original" },
+    { to: "/", icon: FileText, label: "Start" },
     { to: "/edit", icon: Edit3, label: "Edit Text" },
     { to: "/images", icon: ImageIcon, label: "Images" },
     { to: "/sounds", icon: Volume2, label: "Sounds" },
