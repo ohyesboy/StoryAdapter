@@ -24,7 +24,7 @@ const Sounds: React.FC = () => {
     updateTranslation({ ...t, isVoiceGenerating: true });
 
     const textToRead = readTitle ? `${t.title}. ${t.content}` : t.content;
-    const modelId = language === 'en' ? 'eleven_monolingual_v1' : 'eleven_multilingual_v2';
+    const modelId = 'eleven_v3';
 
     try {
       const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, playbackSpeed);
@@ -114,7 +114,7 @@ const Sounds: React.FC = () => {
                     type="range"
                     min="0"
                     max="1"
-                    step="0.01"
+                    step="0.5"
                     value={stability}
                     onChange={(e) => updateVoiceSettings({ stability: parseFloat(e.target.value) })}
                     className="w-24 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
