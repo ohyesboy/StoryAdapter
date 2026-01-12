@@ -81,7 +81,7 @@ const ImagesPage: React.FC = () => {
       </div>
 
       <div className="grid gap-6">
-        {images.map((img) => (
+        {images.map((img, index) => (
           <div key={img.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
             <div className="flex gap-6 flex-col md:flex-row">
               {/* Original */}
