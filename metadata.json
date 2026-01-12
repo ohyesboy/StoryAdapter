@@ -1,0 +1,5 @@
+{
+  "name": "Article Adapter AI",
+  "description": "An AI-powered application to adapt articles, generate images, and create voiceovers using Gemini and ElevenLabs APIs.",
+  "requestFramePermissions": []
+}
