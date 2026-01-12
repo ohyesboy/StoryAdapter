@@ -185,12 +185,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const loadProject = (data: Partial<AppState>) => {
     setState(prev => ({
       ...prev,
-      ...data,
-      // Ensure we keep existing auth state and keys if not provided in data
+      article: data.article || prev.article,
+      translations: data.translations || [],
+      // Ensure we keep existing auth state and keys
       isAuthenticated: prev.isAuthenticated,
       elevenLabsApiKey: prev.elevenLabsApiKey || data.elevenLabsApiKey || '', 
-      // Force images to be empty if not provided (requirements said do not include images in save)
-      images: data.images || [], 
+      // Force images to be empty
+      images: [], 
     }));
   };
 
