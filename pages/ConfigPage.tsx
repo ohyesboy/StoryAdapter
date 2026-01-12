@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../store';
-import { DEFAULT_TEXT_CONFIG } from '../types';
 import { Plus, Trash2, Save } from 'lucide-react';
 
 const ConfigPage: React.FC = () => {

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, VoiceSettings } from './types';
+import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, VoiceSettings, DEFAULT_TEXT_CONFIG2 } from './types';
 
 interface AppContextType extends AppState {
   setArticleId: (id: string) => void;
@@ -45,7 +45,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       translations: [],
       images: [],
       isAuthenticated: false,
-      textConfigs: [DEFAULT_TEXT_CONFIG],
+      textConfigs: [DEFAULT_TEXT_CONFIG,DEFAULT_TEXT_CONFIG2],
       imageConfig: DEFAULT_IMAGE_CONFIG,
       elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
       voiceSettings: DEFAULT_VOICE_SETTINGS,
