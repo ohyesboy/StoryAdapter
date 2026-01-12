@@ -18,6 +18,8 @@ interface AppContextType extends AppState {
   resetArticle: () => void;
   setElevenLabsApiKey: (key: string) => void;
   updateVoiceSettings: (settings: Partial<VoiceSettings>) => void;
+  login: (password: string) => boolean;
+  logout: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -33,12 +35,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (!parsedState.voiceSettings) {
         parsedState.voiceSettings = DEFAULT_VOICE_SETTINGS;
       }
+      if (typeof parsedState.isAuthenticated === 'undefined') {
+        parsedState.isAuthenticated = false;
+      }
       return parsedState;
     }
     return {
       article: { title: '', content: '', url: '' },
       translations: [],
       images: [],
+      isAuthenticated: false,
       textConfigs: [DEFAULT_TEXT_CONFIG],
       imageConfig: DEFAULT_IMAGE_CONFIG,
       elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
@@ -156,6 +162,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     voiceSettings: { ...prev.voiceSettings, ...settings }
   }));
 
+  const login = (password: string) => {
+    // @ts-ignore
+    const envPassword = process.env.PASSWORD;
+    if (!envPassword || password === envPassword) {
+      setState(prev => ({ ...prev, isAuthenticated: true }));
+      return true;
+    }
+    return false;
+  };
+
+  const logout = () => {
+    setState(prev => ({ ...prev, isAuthenticated: false }));
+  };
+
   return (
     <AppContext.Provider value={{
       ...state,
@@ -175,6 +195,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       resetTranslations,
       setElevenLabsApiKey,
       updateVoiceSettings,
+      login,
+      logout
     }}>
       {children}
     </AppContext.Provider>

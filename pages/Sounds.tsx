@@ -37,10 +37,19 @@ const Sounds: React.FC = () => {
   };
 
   const handleBatchGenerate = async () => {
-      const promises = translations.map(t => {
-          if (t.content && !t.voiceFile) return handleGenerateSound(t);
-          return Promise.resolve();
-      });
+      const candidates = translations.filter(t => t.content && !t.isVoiceGenerating);
+      
+      if (candidates.length === 0) return;
+
+      const hasExistingAudio = candidates.some(t => t.voiceFile);
+
+      if (hasExistingAudio) {
+          if (!window.confirm(`This will regenerate audio for ${candidates.length} items. Continue?`)) {
+              return;
+          }
+      }
+
+      const promises = candidates.map(t => handleGenerateSound(t));
       await Promise.all(promises);
   };
 

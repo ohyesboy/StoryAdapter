@@ -1,17 +1,22 @@
 import React from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppProvider } from './store';
+import { AppProvider, useAppStore } from './store';
 import Layout from './components/Layout';
 import Start from './pages/Start';
 import EditText from './pages/EditText';
 import ImagesPage from './pages/ImagesPage';
 import Sounds from './pages/Sounds';
 import ConfigPage from './pages/ConfigPage';
+import LoginPage from './pages/LoginPage';
 
-const App: React.FC = () => {
-  return (
-    <AppProvider>
-      <HashRouter>
+const MainContent: React.FC = () => {
+    const { isAuthenticated } = useAppStore();
+
+    if (!isAuthenticated) {
+        return <LoginPage />;
+    }
+
+    return (
         <Layout>
           <Routes>
             <Route path="/" element={<Start />} />
@@ -22,6 +27,14 @@ const App: React.FC = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Layout>
+    );
+};
+
+const App: React.FC = () => {
+  return (
+    <AppProvider>
+      <HashRouter>
+        <MainContent />
       </HashRouter>
     </AppProvider>
   );

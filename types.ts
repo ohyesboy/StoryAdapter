@@ -46,6 +46,7 @@ export interface AppState {
   article: Article;
   translations: Translation[];
   images: AppImage[];
+  isAuthenticated: boolean;
   textConfigs: TextConfig[];
   imageConfig: ImageConfig;
   elevenLabsApiKey: string; // Allow user override if needed, though env is preferred

@@ -1,8 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FileText, Edit3, Image as ImageIcon, Volume2, Settings } from 'lucide-react';
+import { useAppStore } from '../store';
+import { FileText, Edit3, Image as ImageIcon, Volume2, Settings, LogOut } from 'lucide-react';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { logout } = useAppStore();
   const navItems = [
     { to: "/", icon: FileText, label: "Start" },
     { to: "/edit", icon: Edit3, label: "Edit Text" },
@@ -34,6 +36,14 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <span>{item.label}</span>
             </NavLink>
           ))}
+          
+          <button
+            onClick={logout}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 hover:text-red-600 mt-auto"
+          >
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
         </nav>
         <div className="p-4 border-t text-xs text-gray-400 text-center">
            Powered by Gemini & ElevenLabs
