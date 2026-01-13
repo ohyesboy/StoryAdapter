@@ -121,3 +121,33 @@ export const generateSrtFromAudio = async (audioBase64: string, srtPrompt: strin
   // Remove markdown code block markers if present
   return text.replace(/^```(srt)?\n?/i, '').replace(/\n?```$/, '');
 };
+
+export const generateYoutubeMetadata = async (
+  title: string,
+  content: string,
+  prompt: string
+): Promise<string> => {
+  if (!apiKey) throw new Error("Gemini API Key is missing");
+
+  const ai = new GoogleGenAI({ apiKey });
+  
+  const fullPrompt = `
+    ${prompt}
+    
+    CONTENT TITLE:
+    ${title}
+    
+    CONTENT BODY:
+    ${content}
+  `;
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: fullPrompt
+  });
+
+  const text = response.text;
+  if (!text) throw new Error("No response from Gemini");
+  
+  return text.trim();
+};

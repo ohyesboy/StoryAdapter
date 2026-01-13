@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAppStore } from '../store';
-import { FileText, Edit3, Image as ImageIcon, Volume2, Settings, LogOut, Save, Upload } from 'lucide-react';
+import { FileText, Edit3, Image as ImageIcon, Volume2, Settings, LogOut, Save, Upload, Youtube } from 'lucide-react';
 import { AppState } from '../types';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -70,6 +70,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { to: "/edit", icon: Edit3, label: "Edit Text" },
     { to: "/images", icon: ImageIcon, label: "Images" },
     { to: "/sounds", icon: Volume2, label: "Sounds" },
+    { to: "/youtube", icon: Youtube, label: "Youtube Title" },
     { to: "/config", icon: Settings, label: "Config" },
   ];
 

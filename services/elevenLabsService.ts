@@ -52,9 +52,10 @@ export const getVoices = async (apiKey: string) => {
         });
         if (!response.ok) return [];
         const data = await response.json();
+        console.log(`[ElevenLabs] Fetched ${data.voices?.length || 0} voices`);
         return data.voices;
     } catch (e) {
-        console.error(e);
+        console.error("Error fetching voices:", e);
         return [];
     }
 }

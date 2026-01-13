@@ -11,7 +11,9 @@ const ConfigPage: React.FC = () => {
     imageConfig, 
     setImageConfigPrompt,
     srtConfig,
-    setSrtConfigPrompt
+    setSrtConfigPrompt,
+    youtubeConfig,
+    setYoutubeConfigPrompt
   } = useAppStore();
 
   const handleAddTextConfig = () => {
@@ -51,6 +53,20 @@ const ConfigPage: React.FC = () => {
                 onChange={(e) => setSrtConfigPrompt(e.target.value)}
             />
             <p className="text-xs text-gray-500">This prompt is used when generating SRT subtitles from audio.</p>
+        </div>
+      </section>
+
+      {/* Youtube Prompt */}
+      <section className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 className="text-lg font-semibold text-indigo-600 mb-4">Youtube Title/Desc Prompt</h3>
+        <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">Instructions</label>
+            <textarea
+                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none h-32"
+                value={youtubeConfig?.prompt ?? ''}
+                onChange={(e) => setYoutubeConfigPrompt(e.target.value)}
+            />
+            <p className="text-xs text-gray-500">This prompt is used when generating Youtube titles and descriptions.</p>
         </div>
       </section>
 

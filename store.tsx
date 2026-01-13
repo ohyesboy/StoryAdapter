@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_SRT_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, SrtConfig, VoiceSettings, DEFAULT_TEXT_CONFIG2 } from './types';
+import { AppState, DEFAULT_IMAGE_CONFIG, DEFAULT_SRT_CONFIG, DEFAULT_YOUTUBE_CONFIG, DEFAULT_TEXT_CONFIG, DEFAULT_VOICE_SETTINGS, Translation, AppImage, TextConfig, SrtConfig, YoutubeConfig, VoiceSettings, DEFAULT_TEXT_CONFIG2 } from './types';
 
 interface AppContextType extends AppState {
   setArticleId: (id: string) => void;
@@ -11,6 +11,7 @@ interface AppContextType extends AppState {
   deleteTextConfig: (id: string) => void;
   setImageConfigPrompt: (prompt: string) => void;
   setSrtConfigPrompt: (prompt: string) => void;
+  setYoutubeConfigPrompt: (prompt: string) => void;
   updateTranslation: (translation: Translation) => void;
   addImage: (image: AppImage) => void;
   updateImage: (image: AppImage) => void;
@@ -36,6 +37,7 @@ const initialState: AppState = {
   textConfigs: [DEFAULT_TEXT_CONFIG, DEFAULT_TEXT_CONFIG2],
   imageConfig: DEFAULT_IMAGE_CONFIG,
   srtConfig: DEFAULT_SRT_CONFIG,
+  youtubeConfig: DEFAULT_YOUTUBE_CONFIG,
   elevenLabsApiKey: process.env.EL_API_KEY || process.env.ELEVENLABS_API_KEY || '',
   voiceSettings: DEFAULT_VOICE_SETTINGS,
 };
@@ -146,6 +148,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     srtConfig: { prompt }
   }));
 
+  const setYoutubeConfigPrompt = (prompt: string) => setState(prev => ({
+    ...prev,
+    youtubeConfig: { prompt }
+  }));
+
   const updateTranslation = (translation: Translation) => setState(prev => ({
     ...prev,
     translations: prev.translations.map(t => t.configId === translation.configId ? translation : t)
@@ -221,6 +228,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       deleteTextConfig,
       setImageConfigPrompt,
       setSrtConfigPrompt,
+      setYoutubeConfigPrompt,
       updateTranslation,
       addImage,
       updateImage,

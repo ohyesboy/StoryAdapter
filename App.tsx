@@ -8,6 +8,7 @@ import ImagesPage from './pages/ImagesPage';
 import Sounds from './pages/Sounds';
 import ConfigPage from './pages/ConfigPage';
 import LoginPage from './pages/LoginPage';
+import YoutubeTitle from './pages/YoutubeTitle';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const MainContent: React.FC = () => {
@@ -24,6 +25,7 @@ const MainContent: React.FC = () => {
             <Route path="/edit" element={<EditText />} />
             <Route path="/images" element={<ImagesPage />} />
             <Route path="/sounds" element={<Sounds />} />
+            <Route path="/youtube" element={<YoutubeTitle />} />
             <Route path="/config" element={<ConfigPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

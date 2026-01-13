@@ -12,15 +12,21 @@ export interface SrtConfig {
   prompt: string;
 }
 
+export interface YoutubeConfig {
+  prompt: string;
+}
+
 export interface Translation {
   configId: string;
   title: string;
   content: string;
   voiceFile?: string; // Base64 data URI
   srtContent?: string;
+  youtubeMetadata?: string;
   isGenerating?: boolean;
   isVoiceGenerating?: boolean;
   isSrtGenerating?: boolean;
+  isYoutubeGenerating?: boolean;
   speed?: number; // Voice generation speed
 }
 
@@ -54,6 +60,7 @@ export interface AppState {
   textConfigs: TextConfig[];
   imageConfig: ImageConfig;
   srtConfig: SrtConfig;
+  youtubeConfig: YoutubeConfig;
   elevenLabsApiKey: string; // Allow user override if needed, though env is preferred
   voiceSettings: VoiceSettings;
 }
@@ -82,6 +89,14 @@ Ensure each subtitle block contains only ONE line of text.
 Each line should not have more than 30 characters, try not to break at middle of clauses
 Chinese characters should be in simplified Chinese
 Only output the srt content`
+};
+
+export const DEFAULT_YOUTUBE_CONFIG: YoutubeConfig = {
+    prompt: `I'm making a YouTube video to teach Chinese with news in slow speed. Please write suggested title and description. Give three suggestions for title. helps evaluate the HSK level.  Response in text that youtube supports in description, for example *text* for bold.
+
+Here is the transcription:
+
+`
 };
 
 export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
