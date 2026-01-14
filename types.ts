@@ -69,7 +69,36 @@ export interface AppState {
 export const DEFAULT_TEXT_CONFIG: TextConfig = {
   id: 'zh_lv1',
   name: 'zh_lv0',
-  prompt: 'Gather the title, the content of this news, translated into Chinese and rewrite into a shorter version for Chinese language learning for beginner level, about 200 Chinese characters. using narrators perspective, do not incude and dialog. Show translated/edited title and contnet in Chinese, do not append English or pingyin.'
+  prompt: `Gather the title, the content of this news, translated into Chinese and rewrite into a shorter version for Chinese language learning for HSK1-2 level, use very simple words and short sentences.
+Show translated/edited title and contnet in Chinese, do not append English or pingyin.Summarize this article...
+Use narrators perspective, after that, speaker 2 joins to comment on it and interact with 1st narrator. (they may exchange ideas or ask questions).
+The narration part is about 250 Chinese characters. The interaction part about 200 characters.
+The interaction part should start a new line for each speaker, and starts with [Speaker2] (after main article), like this:
+
+"""
+上海有一个非常有名的公园。在公园里，有一个地方叫相亲角。......
+
+[Speaker2]
+[puzzled] 为什么这些年轻人自己不来公园呢？
+
+[Speaker1]
+[matter-of-fact]你看，这路边到处都是纸，[puzzled]上面写着很多孩子的信息，[curious]真的太多了！
+
+[Speaker2]
+是啊，我也看到了。你觉得这些爸爸妈妈在做什么呢？
+"""
+
+Use the ElevenLabs supported voice emotion tags like in the example in the proper context.
+
+According to ElevenLabs official v3 documentation and research previews, the following tags are explicitly supported:
+
+Emotions: [happy], [sad], [angry], [excited], [nervous], [curious], [somber], [sorrowful], [intense], [upbeat], [sarcastic], [mischievously].
+
+Human Reactions: [laughs], [sighs], [gasp], [gulps], [clears throat], [crying], [stammers], [whispers], [shouts].
+
+Performance/Direction: [tired], [quietly], [loudly], [matter-of-fact], [pauses], [hesitates], [awe].
+ 
+`
 };
 
 export const DEFAULT_TEXT_CONFIG2: TextConfig = {
