@@ -46,6 +46,7 @@ export interface Article {
 
 export interface VoiceSettings {
   voiceId: string;
+  voiceId2?: string;
   language: string;
   playbackSpeed: number;
   stability: number;
@@ -67,7 +68,7 @@ export interface AppState {
 
 export const DEFAULT_TEXT_CONFIG: TextConfig = {
   id: 'zh_lv1',
-  name: 'zh_lv1',
+  name: 'zh_lv0',
   prompt: 'Gather the title, the content of this news, translated into Chinese and rewrite into a shorter version for Chinese language learning for beginner level, about 200 Chinese characters. using narrators perspective, do not incude and dialog. Show translated/edited title and contnet in Chinese, do not append English or pingyin.'
 };
 
@@ -101,6 +102,7 @@ Here is the transcription:
 
 export const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
   voiceId: "21m00Tcm4TlvDq8ikWAM", // Rachel - default voice
+  voiceId2: "21m00Tcm4TlvDq8ikWAM",
   language: "en",
   playbackSpeed: 1.0,
   stability: 0.5,

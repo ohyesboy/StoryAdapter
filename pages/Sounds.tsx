@@ -11,7 +11,7 @@ const Sounds: React.FC = () => {
   const [voices, setVoices] = useState<any[]>([]);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
-  const { voiceId, language, stability, readTitle } = voiceSettings;
+const { voiceId, voiceId2, language, stability, readTitle } = voiceSettings;
 
   useEffect(() => {
     if (elevenLabsApiKey) {
@@ -28,7 +28,7 @@ const Sounds: React.FC = () => {
     const speed = t.speed || 1.0;
 
     try {
-      const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, speed);
+      const audioData = await generateSpeech(textToRead, elevenLabsApiKey, voiceId, modelId, stability, speed, voiceId2);
       updateTranslation({ ...t, voiceFile: audioData, srtContent: undefined, isVoiceGenerating: false });
     } catch (e: any) {
       alert(`Voice generation failed: ${e.message}`);
@@ -119,24 +119,6 @@ const Sounds: React.FC = () => {
             <div className="h-4 w-px bg-gray-300"></div>
 
             <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500">Lang:</span>
-                <select 
-                    value={language}
-                    onChange={(e) => updateVoiceSettings({ language: e.target.value })}
-                    className="border rounded px-2 py-1 text-sm bg-white"
-                >
-                    <option value="en">English (en)</option>
-                    <option value="zh">Chinese (zh)</option>
-                    <option value="es">Spanish (es)</option>
-                    <option value="fr">French (fr)</option>
-                    <option value="de">German (de)</option>
-                    <option value="ja">Japanese (ja)</option>
-                </select>
-            </div>
-
-            <div className="h-4 w-px bg-gray-300"></div>
-
-            <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500">Voice:</span>
                 {voices.length > 0 ? (
                   <select
@@ -155,6 +137,33 @@ const Sounds: React.FC = () => {
                       type="text" 
                       value={voiceId} 
                       onChange={(e) => updateVoiceSettings({ voiceId: e.target.value })}
+                      placeholder="Enter Voice ID"
+                      className="border rounded px-2 py-1 text-sm w-32"
+                  />
+                )}
+            </div>
+
+            <div className="h-4 w-px bg-gray-300"></div>
+
+            <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Voice2:</span>
+                {voices.length > 0 ? (
+                  <select
+                    value={voiceId2}
+                    onChange={(e) => updateVoiceSettings({ voiceId2: e.target.value })}
+                    className="border rounded px-2 py-1 text-sm w-48"
+                  >
+                    {voices.map((voice: any) => (
+                      <option key={voice.voice_id} value={voice.voice_id}>
+                        {voice.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input 
+                      type="text" 
+                      value={voiceId2} 
+                      onChange={(e) => updateVoiceSettings({ voiceId2: e.target.value })}
                       placeholder="Enter Voice ID"
                       className="border rounded px-2 py-1 text-sm w-32"
                   />
