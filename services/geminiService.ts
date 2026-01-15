@@ -5,7 +5,8 @@ const apiKey = process.env.API_KEY;
 export const adaptText = async (
   originalTitle: string,
   originalContent: string,
-  prompt: string
+  prompt: string,
+  model: string = 'gemini-3-flash-preview'
 ): Promise<{ title: string; content: string }> => {
   if (!apiKey) throw new Error("Gemini API Key is missing");
 
@@ -22,7 +23,7 @@ export const adaptText = async (
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
+    model: model,
     contents: fullPrompt,
     config: {
       responseMimeType: 'application/json',

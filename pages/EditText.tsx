@@ -6,6 +6,7 @@ import { Translation } from '../types';
 
 const EditText: React.FC = () => {
   const { article, translations, textConfigs, updateTranslation } = useAppStore();
+  const [selectedModel, setSelectedModel] = React.useState('gemini-3-flash-preview');
 
   const handleGenerate = async (configId: string) => {
     if (!article.content) {
@@ -21,7 +22,7 @@ const EditText: React.FC = () => {
     updateTranslation({ ...currentTrans, isGenerating: true });
 
     try {
-      const result = await adaptText(article.title, article.content, config.prompt);
+      const result = await adaptText(article.title, article.content, config.prompt, selectedModel);
       updateTranslation({
         ...currentTrans,
         title: result.title,
@@ -62,13 +63,23 @@ const EditText: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-800">Adapted Versions</h2>
-        <button
-          onClick={handleBatchGenerate}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2 shadow-sm"
-        >
-          <Sparkles size={18} />
-          Batch Generate All
-        </button>
+        <div className="flex items-center gap-4">
+          <select
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="gemini-3-flash-preview">Gemini 3 Flash Preview</option>
+            <option value="gemini-3-pro-preview">Gemini 3 Pro Preview</option>
+          </select>
+          <button
+            onClick={handleBatchGenerate}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2 shadow-sm"
+          >
+            <Sparkles size={18} />
+            Batch Generate All
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-8">
